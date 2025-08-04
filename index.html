@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Links</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        /* CSS Variables untuk Tema */
+        :root {
+            --bg-color: #f0f2f5;
+            --text-color: #1c1e21;
+            --bio-color: #606770;
+            --link-bg: #ffffff;
+            --link-shadow: rgba(0, 0, 0, 0.08);
+            --link-hover-shadow: rgba(0, 0, 0, 0.12);
+        }
+
+        /* Tema Gelap */
+        body.dark-theme {
+            --bg-color: #121212;
+            --text-color: #e4e6eb;
+            --bio-color: #b0b3b8;
+            --link-bg: #242526;
+            --link-shadow: rgba(255, 255, 255, 0.08);
+            --link-hover-shadow: rgba(255, 255, 255, 0.12);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        .container {
+            max-width: 680px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .profile-picture {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 15px;
+            border: 3px solid var(--link-bg);
+            box-shadow: 0 4px 12px var(--link-shadow);
+            background-color: var(--bio-color); /* Warna placeholder saat loading */
+        }
+
+        .name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            min-height: 28px; /* Placeholder agar layout tidak loncat */
+        }
+
+        .bio {
+            font-size: 1rem;
+            margin-bottom: 25px;
+            color: var(--bio-color);
+            min-height: 24px; /* Placeholder agar layout tidak loncat */
+        }
+
+        .link {
+            background-color: var(--link-bg);
+            color: var(--text-color);
+            text-decoration: none;
+            display: block;
+            padding: 18px 20px;
+            margin: 16px 0;
+            border-radius: 12px;
+            font-weight: 500;
+            font-size: 1rem;
+            box-shadow: 0 2px 8px var(--link-shadow);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.3s;
+        }
+
+        .link:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px var(--link-hover-shadow);
+        }
+        
+        .theme-switcher {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        .theme-button {
+            background: var(--link-bg);
+            color: var(--text-color);
+            border: 1px solid var(--bio-color);
+            border-radius: 20px;
+            padding: 8px 15px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        .theme-button:hover {
+            background: var(--text-color);
+            color: var(--bg-color);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <img src="" alt="Foto Profil GitHub" class="profile-picture" id="profile-pic">
+        
+        <h1 class="name" id="github-name"></h1>
+        <p class="bio" id="github-bio"></p>
+
+        <div class="links">
+            <a href="https://www.youtube.com/c/NamaChannelAnda" class="link" target="_blank">Subscribe YouTube</a>
+            <a href="https://www.instagram.com/dakarma.id" class="link" target="_blank">Follow Instagram</a>
+            <a href="https://www.tiktok.com/@dakarma.id" class="link" target="_blank">Tonton di TikTok</a>
+            <a href="https://discord.gg/dakarma" class="link" target="_blank">Join Komunitas Discord</a>
+        </div>
+        
+        <div class="theme-switcher">
+            <button class="theme-button" onclick="setTheme('light')">☀️ Terang</button>
+            <button class="theme-button" onclick="setTheme('dark')">🌙 Gelap</button>
+            <button class="theme-button" onclick="setTheme('system')">📱 Sistem</button>
+        </div>
+    </div>
+
+    <script>
+        // --- Logika Ambil Foto & Profil GitHub ---
+        async function fetchGithubProfile() {
+            // !!! PENTING: Ganti dengan username GitHub Anda !!!
+            const githubUsername = 'ZackyTiks'; 
+
+            const profilePic = document.getElementById('profile-pic');
+            const githubName = document.getElementById('github-name');
+            const githubBio = document.getElementById('github-bio');
+            
+            try {
+                const response = await fetch(`https://api.github.com/users/${githubUsername}`);
+                if (!response.ok) {
+                    throw new Error('User not found');
+                }
+                const data = await response.json();
+                
+                // Update elemen HTML dengan data dari GitHub
+                profilePic.src = data.avatar_url;
+                githubName.textContent = data.name || data.login; // Tampilkan nama, atau login jika nama tidak diisi
+                githubBio.textContent = data.bio || 'Akun GitHub.'; // Tampilkan bio, atau teks default jika bio kosong
+                
+            } catch (error) {
+                console.error('Gagal mengambil data GitHub:', error);
+                // Tampilkan pesan error jika gagal
+                githubName.textContent = 'Gagal Memuat Profil';
+                githubBio.textContent = 'Cek kembali username atau koneksi internet.';
+            }
+        }
+
+        // --- Logika Tema ---
+        const body = document.body;
+        const systemTheme = window.matchMedia('(prefers-color-scheme: dark)');
+
+        function applyTheme(theme) {
+            if (theme === 'dark') {
+                body.classList.add('dark-theme');
+            } else {
+                body.classList.remove('dark-theme');
+            }
+        }
+
+        function setTheme(theme) {
+            if (theme === 'system') {
+                localStorage.removeItem('selectedTheme');
+                applyTheme(systemTheme.matches ? 'dark' : 'light');
+            } else {
+                localStorage.setItem('selectedTheme', theme);
+                applyTheme(theme);
+            }
+        }
+        
+        systemTheme.addEventListener('change', (e) => {
+            const savedTheme = localStorage.getItem('selectedTheme');
+            if (!savedTheme || savedTheme === 'system') {
+                applyTheme(e.matches ? 'dark' : 'light');
+            }
+        });
+
+        // --- Logika yang Dijalankan Saat Halaman Dimuat ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // 1. Ambil profil GitHub
+            fetchGithubProfile();
+
+            // 2. Terapkan tema yang tersimpan
+            const savedTheme = localStorage.getItem('selectedTheme');
+            if (savedTheme && savedTheme !== 'system') {
+                applyTheme(savedTheme);
+            } else {
+                applyTheme(systemTheme.matches ? 'dark' : 'light');
+            }
+        });
+    </script>
+
+</body>
+</html>
